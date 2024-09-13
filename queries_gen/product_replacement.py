@@ -75,14 +75,20 @@ def augment_queries(json_str: str):
 # %%
 with open("./data/seed_queries.jsonl", "r") as f:
     out_f = open("./data/product_aug.jsonl", "a")
+
     for line in f:
         dict_repr = json.loads(line)
+
         if "PRODUCT" not in dict_repr["intent"]:
+            json.dump(dict_repr, out_f)
+            out_f.write("\n")
             continue
+
         # Get the queries augmented with products
         aug_queries = augment_queries(json.dumps(dict_repr, indent=4))
         # Process the queries to separate them and create new queries for individual products
         dict_repr["seed_queries"] = process_queries(json.loads(aug_queries))
+
         json.dump(dict_repr, out_f)
         out_f.write("\n")
     out_f.close()
