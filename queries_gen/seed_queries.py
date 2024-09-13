@@ -73,7 +73,7 @@ def get_seed_queries():
 
 
 # %%
-with open("seed_queries.jsonl", "a") as f:
+with open("./data/seed_queries.jsonl", "a") as f:
     res = get_seed_queries()
     for queries in res:
         q = queries.choices[0].message.content.replace("\u2019", "'")

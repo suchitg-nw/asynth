@@ -6,7 +6,6 @@ from functools import cache
 
 from dotenv import load_dotenv
 from openai import OpenAI
-
 from prompts import product_sys_prompt
 
 load_dotenv()
@@ -74,8 +73,8 @@ def augment_queries(json_str: str):
 
 
 # %%
-with open("./seed_queries.jsonl", "r") as f:
-    out_f = open("./product_aug.jsonl", "a")
+with open("./data/seed_queries.jsonl", "r") as f:
+    out_f = open("./data/product_aug.jsonl", "a")
     for line in f:
         dict_repr = json.loads(line)
         if "PRODUCT" not in dict_repr["intent"]:
