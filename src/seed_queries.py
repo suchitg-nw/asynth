@@ -1,6 +1,7 @@
 # %%
 import json
 import os
+from functools import cache
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -53,21 +54,28 @@ intents = [
     "PRODUCT_exchange_product",
 ]
 
+
 # %%
-res = [
-    client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": sys_prompt},
-            {"role": "user", "content": f"INTENT: {intent}"},
-        ],
-        response_format={"type": "json_object"},
-    )
-    for intent in intents
-]
+@cache
+def get_seed_queries():
+    res = [
+        client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": sys_prompt},
+                {"role": "user", "content": f"INTENT: {intent}"},
+            ],
+            response_format={"type": "json_object"},
+        )
+        for intent in intents
+    ]
+    return res
+
 
 # %%
 with open("seed_queries.jsonl", "a") as f:
-    for r in res:
-        json.dump(json.loads(r.choices[0].message.content), f)
+    res = get_seed_queries()
+    for queries in res:
+        q = queries.choices[0].message.content.replace("\u2019", "'")
+        json.dump(json.loads(q), f)
         f.write("\n")
